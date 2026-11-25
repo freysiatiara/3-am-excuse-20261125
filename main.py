@@ -39,12 +39,24 @@ def resolve_output_path():
         )
 
 
+def verify_written(path):
+    """Read the entry back and confirm it matches ENTRY exactly."""
+    with open(path, "r", encoding="utf-8") as handle:
+        written = handle.read()
+    if written != ENTRY or not 1 <= len(written) <= 200:
+        raise SystemExit(
+            "verification failed: entry.txt content mismatch "
+            "(len=%d)" % len(written)
+        )
+
+
 def main():
     path = resolve_output_path()
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as handle:
         handle.write(ENTRY)
     os.chmod(path, 0o644)
+    verify_written(path)
 
 
 if __name__ == "__main__":
